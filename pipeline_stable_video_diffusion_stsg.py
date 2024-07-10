@@ -223,12 +223,12 @@ class StableVideoDiffusionSTSGipeline(DiffusionPipeline, STSGMixin):
         image_embeddings = image_embeddings.view(bs_embed * num_videos_per_prompt, seq_len, -1)
 
         if do_classifier_free_guidance:
-            # negative_image_embeddings = torch.zeros_like(image_embeddings)
+            negative_image_embeddings = torch.zeros_like(image_embeddings)
 
             # For classifier free guidance, we need to do two forward passes.
             # Here we concatenate the unconditional and text embeddings into a single batch
             # to avoid doing two forward passes
-            image_embeddings = torch.cat([image_embeddings, image_embeddings])
+            image_embeddings = torch.cat([negative_image_embeddings, negative_image_embeddings])
 
         return image_embeddings
 
@@ -251,7 +251,7 @@ class StableVideoDiffusionSTSGipeline(DiffusionPipeline, STSGMixin):
             # For classifier free guidance, we need to do two forward passes.
             # Here we concatenate the unconditional and text embeddings into a single batch
             # to avoid doing two forward passes
-            image_latents = torch.cat([image_latents, image_latents])
+            image_latents = torch.cat([negative_image_latents, negative_image_latents])
 
         return image_latents
 
